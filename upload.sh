@@ -1,5 +1,12 @@
 #!/bin/bash
 
-curl -k -T test/test.txt -u "if5nT5A7Ynesqge:yPYCL3Acf9" \
+# Import .env
+if [ -f .env ]; then
+  export $(echo $(cat .env | sed 's/#.*//g'| xargs) | envsubst)
+fi
+
+echo "Starting Backup upload to ${NEXTCLOUD_HOST}"
+
+curl -k -T test/test.txt -u "${NEXTCLOUD_SHARE}:${NEXTCLOUD_PWD}" \
   -H 'X-Requested-With: XMLHttpRequest' \
-  "https://nextcloud.satoshiengineering.com/public.php/webdav/$(date '+%Y-%m-%d_%H-%M')-testfile.txt"
+  "${NEXTCLOUD_HOST}/public.php/webdav/$(date '+%Y-%m-%d_%H-%M')-archive.txt"
